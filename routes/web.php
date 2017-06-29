@@ -16,3 +16,27 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Departments
+Route::get("/departamentos", "DepartmentController@index");
+Route::post("/departamentos", "DepartmentController@store");
+Route::get("/departamentos/crear", "DepartmentController@create");
+Route::get("/departamentos/{department}", "DepartmentController@edit");
+Route::PUT("/departamentos/{department}", "DepartmentController@update");
+Route::delete("/departamentos/{department}", "DepartmentController@destroy");
+
+// Tipos de Activos
+Route::get("/tipos-activos", "TypesAssetsController@index");
+Route::post("/tipos-activos", "TypesAssetsController@store");
+Route::get("/tipos-activos/crear", "TypesAssetsController@create");
+Route::get("/tipos-activos/{typesAssets}", "TypesAssetsController@edit");
+Route::PUT("/tipos-activos/{typesAssets}", "TypesAssetsController@update");
+Route::delete("/tipos-activos/{typesAssets}", "TypesAssetsController@destroy");
+
+// Employee
+Route::get("/empleados", "EmployeesController@index");
+Route::post("/empleados", "EmployeesController@store");
+Route::get("/empleados/crear", "EmployeesController@create");
+Route::get("/empleados/{employee}", "EmployeesController@edit");
+Route::PUT("/empleados/{employee}", "EmployeesController@update");
+Route::delete("/empleados/{employee}", "EmployeesController@destroy");
