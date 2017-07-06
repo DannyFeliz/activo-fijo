@@ -37,7 +37,7 @@
                         <li><a href="/departamentos">Departamentos</a></li>
                         <li><a href="/tipos-activos">Tipos de Activos</a></li>
                         <li><a href="/empleados">Empleados</a></li>
-                        <li><a href="#">...</a></li>
+                        <li><a href="/activos-fijos">Activos Fijos</a></li>
                         </li>
                     </ul>
                 </div><!--/.nav-collapse -->

@@ -40,3 +40,13 @@ Route::get("/empleados/crear", "EmployeesController@create");
 Route::get("/empleados/{employee}", "EmployeesController@edit");
 Route::PUT("/empleados/{employee}", "EmployeesController@update");
 Route::delete("/empleados/{employee}", "EmployeesController@destroy");
+
+// Fixed Assets
+Route::get("/activos-fijos", "FixedAssetsController@index");
+Route::post("/activos-fijos", "FixedAssetsController@store");
+Route::get("/activos-fijos/crear", "FixedAssetsController@create");
+Route::get("/activos-fijos/{fixed_asset}", "FixedAssetsController@edit");
+Route::PUT("/activos-fijos/{fixed_asset}", "FixedAssetsController@update");
+Route::delete("/activos-fijos/{fixed_asset}", "FixedAssetsController@destroy");
+
+
