@@ -49,4 +49,10 @@ Route::get("/activos-fijos/{fixed_asset}", "FixedAssetsController@edit");
 Route::PUT("/activos-fijos/{fixed_asset}", "FixedAssetsController@update");
 Route::delete("/activos-fijos/{fixed_asset}", "FixedAssetsController@destroy");
 
-
+// Depreciation Calculation
+Route::get("/calculo-depreciaciones", "DepreciationCalculationController@index");
+Route::post("/calculo-depreciaciones", "DepreciationCalculationController@store");
+Route::get("/calculo-depreciacion/crear", "DepreciationCalculationController@create");
+Route::get("/calculo-depreciacion/{depreciation}", "DepreciationCalculationController@edit");
+Route::PUT("/calculo-depreciacion/{depreciation}", "DepreciationCalculationController@update");
+Route::delete("/calculo-depreciacion/{depreciation}", "DepreciationCalculationController@destroy");

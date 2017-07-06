@@ -38,6 +38,7 @@
                         <li><a href="/tipos-activos">Tipos de Activos</a></li>
                         <li><a href="/empleados">Empleados</a></li>
                         <li><a href="/activos-fijos">Activos Fijos</a></li>
+                        <li><a href="/calculo-depreciaciones">Depreciaciones</a></li>
                         </li>
                     </ul>
                 </div><!--/.nav-collapse -->
