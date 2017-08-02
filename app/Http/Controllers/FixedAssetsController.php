@@ -47,6 +47,7 @@ class FixedAssetsController extends Controller
         $fixed_asset->amount = $request->amount;
         $fixed_asset->registration_date = date('d-m-Y');
         $fixed_asset->amount = $request->amount;
+        $fixed_asset->accumulated_depreciation = 0;
         $fixed_asset->save();
 
         return redirect('/activos-fijos');
