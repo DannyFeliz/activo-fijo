@@ -6,6 +6,9 @@ use App\DepreciationCalculation;
 use App\FixedAssets;
 use App\TypesAssets;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
+
+
 
 class DepreciationCalculationController extends Controller
 {
@@ -51,14 +54,23 @@ class DepreciationCalculationController extends Controller
         $fixed_asset->accumulated_depreciation = $accumulated_depreciation;
         $fixed_asset->save();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\DepreciationCalculation  $depreciationCalculation
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(DepreciationCalculation $depreciationCalculation)
-    {
-        //
+        //Send info to Accountants
+        $response = (new Client)->request('POST', 'http://accountingintegration.azurewebsites.net/api/accountingentry', [
+              'json' => [
+                    "description" => "Depreciacion de activo Fijo",
+                    "auxiliary" => [ 
+                        "id" => 4
+                    ],
+                    "transactions" => [
+                        "accountingAccount" => [
+                            "id" => [$type_assets->accounting_accounts_depreciation]
+                        ],
+                        "origin" => "CREDIT",
+                        "amount" => $monthly_depreciation
+                    ]
+            ]
+        ]);
+
+        return redirect('/calculo-depreciaciones');
     }
 }
