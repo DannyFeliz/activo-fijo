@@ -2,7 +2,7 @@
 
 @section("content")
 
-    <h2>Listado de Activos Fijos</h2>
+    <h2>Depreciacion de Activos Fijos</h2>
     <a href="/calculo-depreciacion/crear" class="btn btn-default">Agregar</a>
     <hr>
     <div class="table-responsive">
@@ -10,26 +10,24 @@
             <thead>
             <tr>
                 <th>Id</th>
-                <th>Año Proceso</th>
-                <th>Mes Proceso</th>
-                <th>Cuenta Compra</th>
-                <th>Cuenta Depreciacion</th>
+                <th>Activo Fijo</th>
+                <th>Depreciacion Acumulada</th>
             </tr>
             </thead>
             <tbody>
-            @foreach($depreciationCalculations as $depreciationCalculation)
+            @foreach($fixed_assets as $fixed_asset)
                 <tr>
-                    <td>{{ $depreciationCalculation->id }}</td>
-                    <td>{{ $depreciationCalculation->process_year }}</td>
-                    <td>{{ $depreciationCalculation->process_month }}</td>
-                    <td>{{ $depreciationCalculation->parchuse_account }}</td>
-                    <td>{{ $depreciationCalculation->depreciation_account }}</td>
+                    <td>{{ $fixed_asset->id }}</td>
+                    <td>{{ $fixed_asset->description }}</td>
+                    <td>{{ $fixed_asset->accumulated_depreciation }}</td>
                     <td>
-                        <a class="btn btn-default" href="/calculo-depreciacion/{{ $depreciationCalculation->id }}">Editar</a>
-                        <form style="display: inline-block;" action="/calculo-depreciacion/{{ $depreciationCalculation->id }}" method="post" class="form">
+                        <form style="display: inline-block;" 
+                              action="/calculo-depreciacion/depreciar/{{ $fixed_asset->id }}"
+                              method="post"
+                              class="form"
+                        >
                             {{ csrf_field() }}
-                            {{ method_field("delete") }}
-                            <button class="btn btn-danger">Eliminar</button>
+                            <button class="btn btn-danger">Depreciar</button>
                         </form>
                     </td>
                 </tr>

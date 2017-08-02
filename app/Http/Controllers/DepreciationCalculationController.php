@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DepreciationCalculation;
 use App\FixedAssets;
+use App\TypesAssets;
 use Illuminate\Http\Request;
 
 class DepreciationCalculationController extends Controller
@@ -15,19 +16,11 @@ class DepreciationCalculationController extends Controller
      */
     public function index()
     {
-        $depreciationCalculations = DepreciationCalculation::all();
-        return view('depreciation-calculation.index', compact('depreciationCalculations'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $fixed_assets = FixedAssets::all();
-        return view('depreciation-calculation.create', compact('fixed_assets'));
+        //Do not show assets that where already fully depreciated;
+        $fixed_assets = FixedAssets::all()->filter(function($asset, $key){
+            return ($asset->amount - $asset->accumulated_depreciation) > 1;
+        });
+        return view('depreciation-calculation.index', compact('fixed_assets'));
     }
 
     /**
@@ -36,46 +29,27 @@ class DepreciationCalculationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FixedAssets $fixed_asset)
     {
-        //
-    }
+        $type_assets = TypesAssets::find($fixed_asset->type_asset_id);
+        $depreciation_calculation = new DepreciationCalculation();
+        $depreciation_calculation->process_year = date('Y');
+        $depreciation_calculation->process_month = date('m');
+        $depreciation_calculation->fixed_asset_id = $fixed_asset->id;
+        $depreciation_calculation->parchuse_account = $type_assets->accounting_accounts_purchase;
+        $depreciation_calculation->depreciation_account = $type_assets->accounting_accounts_depreciation;
+        $depreciation_calculation->process_date = date('d-m-Y');
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\DepreciationCalculation  $depreciationCalculation
-     * @return \Illuminate\Http\Response
-     */
-    public function show(DepreciationCalculation $depreciationCalculation)
-    {
-        //
-    }
+        //Calculate Depreciation
+        //Depreciation based on a FIXED amount of time of one Year
+        $monthly_depreciation = $fixed_asset->amount / 12;
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\DepreciationCalculation  $depreciationCalculation
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(DepreciationCalculation $depreciationCalculation)
-    {
-        $depreciationCalculation = $depreciationCalculation;
-        $fixed_assets = FixedAssets::all();
-        return view('depreciation-calculation.edit', compact('fixed_assets', 'depreciationCalculation'));
-    }
+        $depreciation_calculation->despised_amount = $monthly_depreciation;
+        $depreciation_calculation->save();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\DepreciationCalculation  $depreciationCalculation
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, DepreciationCalculation $depreciationCalculation)
-    {
-        //
-    }
+        $accumulated_depreciation = $fixed_asset->accumulated_depreciation + $monthly_depreciation;
+        $fixed_asset->accumulated_depreciation = $accumulated_depreciation;
+        $fixed_asset->save();
 
     /**
      * Remove the specified resource from storage.
