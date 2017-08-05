@@ -34,6 +34,9 @@ class DepreciationCalculationController extends Controller
      */
     public function store(FixedAssets $fixed_asset)
     {
+        define("A_YEAR", 12);
+        define("DEPRECIACION", 8);
+
         $type_assets = TypesAssets::find($fixed_asset->type_asset_id);
         $depreciation_calculation = new DepreciationCalculation();
         $depreciation_calculation->process_year = date('Y');
@@ -45,7 +48,7 @@ class DepreciationCalculationController extends Controller
 
         //Calculate Depreciation
         //Depreciation based on a FIXED amount of time of one Year
-        $monthly_depreciation = $fixed_asset->amount / 12;
+        $monthly_depreciation = $fixed_asset->amount / A_YEAR;
 
         $depreciation_calculation->despised_amount = $monthly_depreciation;
         $depreciation_calculation->save();
@@ -55,22 +58,36 @@ class DepreciationCalculationController extends Controller
         $fixed_asset->save();
 
         //Send info to Accountants
+
+
         $response = (new Client)->request('POST', 'http://accountingintegration.azurewebsites.net/api/accountingentry', [
-              'json' => [
-                    "description" => "Depreciacion de activo Fijo",
+            'json' => [
+                    "description" => "Depreciacion de activo Fijo [{$fixed_asset->description}]",
                     "auxiliary" => [ 
-                        "id" => 4
+                        "id" => DEPRECIACION
                     ],
                     "transactions" => [
-                        "accountingAccount" => [
-                            "id" => [$type_assets->accounting_accounts_depreciation]
+                        [
+                            "accountingAccount" => [
+                                "id" => 65
+                            ],
+                            "origin" => "CREDIT",
+                            "amount" => $monthly_depreciation
+
                         ],
-                        "origin" => "CREDIT",
-                        "amount" => $monthly_depreciation
+                        [
+                            "accountingAccount" => [
+                                "id" => 66
+                            ],
+                            "origin" => "DEBIT",
+                            "amount" => $monthly_depreciation
+                        ]
                     ]
             ]
         ]);
+        $transactionId = (string) $response->getBody();
 
-        return redirect('/calculo-depreciaciones');
+        return redirect('/calculo-depreciaciones?success=' . $transactionId);
     }
 }
+
